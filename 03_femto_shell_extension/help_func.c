@@ -1,6 +1,8 @@
 #include "help_func.h"
 
+/* define size of set array */
 int set_len = 0;
+/* define my set as local_vars -- this is custom datatype found in header file */
 local_vars *my_set;
 
 
@@ -22,29 +24,29 @@ return: int num:  number of words
 ***/
 int words_num(char str[])
 {
+    /* create copy of input str in heap memory*/
     char *str_copy = malloc((strlen(str)+1) * sizeof(char));
     strcpy(str_copy,str);
 
     char *ptr;        
     int num = 0;
-
+    /* split input str by spaces and count each word in line */
     ptr = strtok(str_copy," ");
-
     while (ptr != NULL){
         if(ptr != NULL)
         {
-            // printf("%s\n",ptr);
             num++;
         }
         ptr = strtok(NULL," ");
     }
     num++; //end by NULL
-    // printf("num of words = %d\n", num);
+    /* free heap memory */
     free(str_copy);
-
+    /* return number of words in input line */
     return num;
 
 }
+
 /***
 Function Description: this function pharising the input into words
 parameter:  char str[]: input string from user, int num_of_words: in input string
@@ -52,27 +54,28 @@ return: char** split: array of sting contain each word and ended by NULL
 ***/
 char** pharsing(char str[], int num_of_words)
 {
+    /* create copy of input str in heap memory*/
     char *str_copy = malloc((strlen(str)+1) * sizeof(char));
     strcpy(str_copy,str);
 
-
+    /* create 2d array in heap memory for splited words */
     char **split;
     split = (char**) malloc(num_of_words * sizeof(char*));
 
+    /* split input str by spaces and save each word in split array */
     char *ptr = strtok(str_copy," ");
-
     for(int i=0; i< (num_of_words-1); i++)
     {   
         split[i] = (char*) malloc((strlen(ptr)+1) * sizeof(char));
         strcpy(split[i],ptr);
-        // printf("%s\n",split[i]);
         ptr = strtok(NULL," ");
     }
+    /* end split array by NULL --used as argv arr-- */
     split[num_of_words-1] = (char*) malloc(sizeof(void *));
     split[num_of_words-1] = NULL;    
-
-    // printf("================\n");
+    /* free heap memory from copy of input str */
     free(str_copy);
+    /* return split arr pointer -- this is array in heap memory now */
     return split;
 }
 /***
@@ -82,18 +85,24 @@ return: int : -1 in falid otherwise return 0
 ***/
 int create_process(const char *file, char *const argv[])
 {
+    /* create a child process */
     int pid = fork();
+    /* check if in child process */
     if(pid == 0)
     {
+        /* replaces the current process image with a new process image.*/
         execvp(file,argv);
+        /* if return then print error massege and return -1 to end process*/
         print(RED "Error in create process exec \n" RESET);
         return -1;
     }
+    /* check if faild to create child process*/
     else if (pid == -1)
     {
         print(RED "Error in create process fork \n" RESET);
         return -1;
     }
+    /* else my main code --parent process now-- wait my child to terminade and contiune */
     else
         if(wait(&pid) == -1)
         {
@@ -109,9 +118,11 @@ return: none
 ***/
 void add_local_varible(char str[])
 {
+    /* split line into name and value by '=' char*/
     char * name = strtok(str,"=");
     char * value = strtok(NULL,"=");
 
+    /*check if the name of local varible defined before to overwite its value and retrun the function --end func--*/
     for(int i=0; i<set_len; i++)
     {
         if(strcmp(my_set[i].var_name,name) == 0)
@@ -120,18 +131,22 @@ void add_local_varible(char str[])
             return;
         }
     }
-
+    /* if new varible is defined */
+    /* 
+     * check if the varible is first in set to create set 
+     * or not to just realloc its size 
+     */
     if(set_len == 0)
         my_set = (local_vars *) malloc( sizeof(local_vars));
     else
         my_set = (local_vars *) realloc(my_set,(set_len + 1) * sizeof(local_vars));
-
+    /* define name and value of local varible */
     my_set[set_len].var_name  = (char*) malloc((strlen(name)+1) * sizeof(char));
     strcpy(my_set[set_len].var_name, name);
 
     my_set[set_len].var_value = (char*) malloc((strlen(value)+1) * sizeof(char));
     strcpy(my_set[set_len].var_value, value);
-    
+    /* increase size of set array by 1 */
     set_len++;
 }
 /***
@@ -151,7 +166,7 @@ return: none
 ***/
 void mv_local_to_env(char name[])
 {
-     for(int i=0; i<set_len; i++)
+    for(int i=0; i<set_len; i++)
     {
         if(strcmp(my_set[i].var_name,name) == 0)
         {
@@ -159,6 +174,7 @@ void mv_local_to_env(char name[])
             return;
         }
     }
+    /* if not found the varible name in local varible (my_set array) print error massege*/
     print(RED "Error " GRN);
     print(name);
     print(RED " not set\n" RESET);
@@ -170,6 +186,7 @@ return: none
 ***/
 void my_exit(char **split, int split_size)
 {
+    /* free all the heap memory --split array & my_set array-- */
     for (int i = 0; i <= split_size; i++)
         free(split[i]);
     free(my_set);
