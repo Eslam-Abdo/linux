@@ -20,6 +20,9 @@
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
+/* define enum for redirction IO redirection*/
+typedef enum {no_redic, redic}redirection_process;
+
 /* define struct for local varible*/
 typedef struct 
 {
@@ -36,6 +39,12 @@ return: int num:  number of words
 ***/
 void print(const char *buf);
 /***
+Function Description: this function like fprintf but it used system call function "write" to write in stderr
+parameter: const char *buf : buffer of string 
+return: int num:  number of words 
+***/
+void fprint(const char *buf);
+/***
 Function Description: this function count how many word in input sperated by space
 parameter:  char str[]: input string  from user
 return: int num:  number of words 
@@ -47,12 +56,14 @@ parameter:  char str[]: input string from user, int num_of_words: in input strin
 return: char** split: array of sting contain each word and ended by NULL
 ***/
 char** pharsing(char str[], int num_of_words);
+
+void redirectoin_func(char *const argv[]);
 /***
 Function Description: this function creat new process by fork & execvp funcs.
 parameter:  const char *file, char *const argv[] : command file name like ls, cd , ps,... | argument of command 
 return: int : -1 in falid otherwise return 0
 ***/
-int create_process(const char *file, char *const argv[]);
+int create_process(const char *file, char *const argv[], redirection_process redirc_flag);
 /***
 Function Description: this function add new local varible to my_set array
 parameter:  char str[]: input string from user like to name=value ex x=5, y=ahmed

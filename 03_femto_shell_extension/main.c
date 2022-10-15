@@ -29,7 +29,11 @@ int main()
             }
             /* built in export command */
             else if (strcmp(split_str[0], "export") == 0)
-                mv_local_to_env(split_str[1]);
+                /* handle error of miss arrguemant */
+                if(split_str[1] == NULL)
+                    fprint(RED "Error enter varible name to export\n");
+                else
+                    mv_local_to_env(split_str[1]);
             /* built in set command */
             else if (strcmp(split_str[0], "set") == 0)
                 get_local_varible();
@@ -38,8 +42,12 @@ int main()
                 add_local_varible(split_str[0]);
             /* if something else create new process using fork & execvp funcs */
             else 
-                if(create_process(split_str[0],split_str)==-1)
-                    return -1;
+                if ((strchr(input_str,'>')!= NULL) || (strchr(input_str,'<')!= NULL))
+                    if(create_process(split_str[0],split_str,redic)==-1)
+                        return -1;
+                else
+                    if(create_process(split_str[0],split_str,no_redic)==-1)
+                        return -1;
         }
         /* free heap memory and loop again*/
         free(split_str);

@@ -8,14 +8,24 @@ local_vars *my_set;
 
 
 /***
-Function Description: this function like printf but it used system call function write
-parameter: const void *buf, size_t count : buffer of string and its size
+Function Description: this function like printf but it used system call function "write" to write in stdout
+parameter: const char *buf : buffer of string 
 return: int num:  number of words 
 ***/
 void print(const char *buf)
 {
     if (write(1, buf, strlen(buf)) == -1)
-		printf(RED "Error in print");
+		fprintf(stderr, RED "Error in print");
+}
+/***
+Function Description: this function like fprintf but it used system call function "write" to write in stderr
+parameter: const char *buf : buffer of string 
+return: int num:  number of words 
+***/
+void fprint(const char *buf)
+{
+    if (write(2, buf, strlen(buf)) == -1)
+		fprintf(stderr, RED "Error in fprint");
 }
 /***
 Function Description: this function count how many word in input sperated by space
@@ -78,35 +88,43 @@ char** pharsing(char str[], int num_of_words)
     /* return split arr pointer -- this is array in heap memory now */
     return split;
 }
+
+void redirectoin_func(char *const argv[])
+{
+    /* under dovelopment func to handle IO redirection */
+}
+
 /***
 Function Description: this function creat new process by fork & execvp funcs.
 parameter:  const char *file, char *const argv[] : command file name like ls, cd , ps,... | argument of command 
+            redirection_process redirc_flag: flag to check if found IO redirection or not
 return: int : -1 in falid otherwise return 0
 ***/
-int create_process(const char *file, char *const argv[])
+int create_process(const char *file, char *const argv[],redirection_process redirc_flag)
 {
     /* create a child process */
     int pid = fork();
     /* check if in child process */
     if(pid == 0)
-    {
+    {   if(redirc_flag)
+            redirectoin_func(argv);
         /* replaces the current process image with a new process image.*/
         execvp(file,argv);
         /* if return then print error massege and return -1 to end process*/
-        print(RED "Error in create process exec \n" RESET);
+        fprint(RED "Error in create process exec \n" RESET);
         return -1;
     }
     /* check if faild to create child process*/
     else if (pid == -1)
     {
-        print(RED "Error in create process fork \n" RESET);
+        fprint(RED "Error in create process fork \n" RESET);
         return -1;
     }
     /* else my main code --parent process now-- wait my child to terminade and contiune */
     else
         if(wait(&pid) == -1)
         {
-            print(RED "Error in create process wait child process \n" RESET);
+            fprint(RED "Error in create process wait child process \n" RESET);
             return -1;
         }
     return 0;
@@ -175,9 +193,9 @@ void mv_local_to_env(char name[])
         }
     }
     /* if not found the varible name in local varible (my_set array) print error massege*/
-    print(RED "Error " GRN);
-    print(name);
-    print(RED " not set\n" RESET);
+    fprint(RED "Error " GRN);
+    fprint(name);
+    fprint(RED " not set\n" RESET);
 }
 /***
 Function Description: this function exit the shell and free the heap memory
