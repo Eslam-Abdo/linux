@@ -6,4 +6,8 @@
 	Extra requirement for the super super runners
 	- Support parsing the GPT partition table 🙃
 # Solution 
-![](./solution.png)
+## MBR Partion table
+![](./solution_MBR.png)
+
+## GPT Partion table
+![](./solution_GPT.png)
