@@ -12,9 +12,10 @@
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
-
+/* define union for file mode */
 typedef union
 {
+    /* define struct for 12-bits of file type and its mode */
     struct
     {
         uint16_t other_x:1;
@@ -31,11 +32,10 @@ typedef union
         uint16_t suid:1;
         uint16_t fileType:4;
     };
-
     uint16_t varible;
 }mode_u;
 
-
+/* define struct for ls flags (-l, -a, -R) */
 typedef struct 
 {
     uint8_t list_files;
@@ -44,14 +44,57 @@ typedef struct
 }flag_t;
 
 
-
-
+/**************************** define ofs funcs *****************************/
+/***
+Function Description: this function return type of file
+parameter:  uint16_t type : file type
+return:  char of type
+***/
 char file_type(uint16_t type);
+/***
+Function Description: this function print file type and its mode (permission)
+parameter:  mode_t stmode: mode from stat struct
+return:  none
+***/
 void file_mode(mode_t stmode);
+/***
+Function Description: this function return username of file from it's id
+parameter:  uint16_t id: user id
+return:  string : username
+***/
 char * uid_name(uint16_t id);
+/***
+Function Description: this function return group of file from it's id
+parameter:  uint16_t id: group id
+return:  string : group name
+***/
 char * gid_name(uint16_t id);
+/***
+Function Description: this function print header of ls 
+parameter: none
+return: none
+***/
 void print_header();
+/***
+Function Description: this function print file stat 
+parameter: const char *dir_name: name of main dirctory
+             const char *d_name: file name
+return: none
+***/ 
 void print_file(const char *dir_name, const char *d_name);
+/***
+Function Description: this function return number of coulom in terminal window
+                        used to hadle ouput of printf
+parameter: none
+return: number of coulom in terminal window
+***/
+int get_windowSize();
+/***
+Function Description: this function print all file in dirctory like (ls with 3 flags -R, -l, -a) 
+parameter: const char *dir_name: name of dirctory, 
+            flag_t flags: struct contain 3 flags (-R, -l, -a)  
+return: none
+***/
 void myls(const char *dir_name, flag_t flags);
 
 
