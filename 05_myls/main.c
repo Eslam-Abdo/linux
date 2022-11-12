@@ -8,9 +8,12 @@ int main(int argc, char *argv[])
     flag_t flags = {0,0,0};
     int opt;
     
-    // put ':' in the starting of the
-    // string so that program can
-    //distinguish between '?' and ':'
+    /* parsing argv option -R -l -a */
+    /*
+     * put ':' in the starting of the
+     * string so that program can
+     * distinguish between '?' and ':'
+     */
     while((opt = getopt(argc, argv, "Rla")) != -1)
     {
         switch(opt)
@@ -26,17 +29,14 @@ int main(int argc, char *argv[])
                 break;
         }
     }
+    /* if no dirctory input used current location */
     if(optind == argc)
         myls("./",flags);
 
     // optind is for the extra arguments
     // which are not parsed
-    for(; optind < argc; optind++){	
-        // printf("extra arguments: %s\n", argv[optind]);
+    for(; optind < argc; optind++)
         myls(argv[optind],flags);
-    }
-	
-    
-    // printf("\n");
+
     return 0;
 }
