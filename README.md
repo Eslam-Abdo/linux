@@ -1,5 +1,6 @@
 # Introduction to System Programming in Linux
-Welcome to the [Introduction to System Programming in Linux](https://www.youtube.com/playlist?list=PLOBLIyu46FvPlBaAdPrzLqOx6O5rowI9I) course on YouTube! This course is designed to help you understand the basics of system programming in Linux and how to write efficient programs using system calls in C.
+This repository contains the solutions to the assignments from the [Introduction to System Programming in Linux](https://www.youtube.com/playlist?list=PLOBLIyu46FvPlBaAdPrzLqOx6O5rowI9I) playlist on YouTube by Eng. [Reda Maher](https://www.linkedin.com/in/redamaher/)!  
+This playlist is designed to help you understand the basics of system programming in Linux and how to write efficient programs using system calls in C.
 
 ## Course Overview
 This course covers the following topics:
